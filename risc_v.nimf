@@ -1,0 +1,61 @@
+#? strip | stdtmpl(emit = "stdout.write")
+#
+# type RiscV = ref object of Target
+# method prelude(this: RiscV) =
+    .data
+    cells:
+        .space 30000
+
+    .text
+    main:
+        la s0, cells
+# end method
+#
+# method emit(this: RiscV, instr: Instruction, i: int) =
+# case instr.command:
+    # of MoveRight:
+        ## move the pointer instr.times cells to the right
+        addi s0, s0, ${instr.times}
+    # of MoveLeft:
+        ## move the pointer instr.times cells to the left
+        addi s0, s0, ${-instr.times}
+    # of Add:
+        ## put the first byte at the pointer into s1 register
+        lbu s1, (s0)
+        ## add instr.times to the byte
+        addi s1, s1, ${instr.times}
+        ## write the changes back into the cell
+        sb s1, (s0)
+    # of Sub:
+        lbu s1, (s0)
+        addi s1, s1, ${-instr.times}
+        sb s1, (s0)
+    # of Write:
+        lbu a0, (s0)
+        ## put the function 'write'(11) into a7 register
+        li a7, 11
+        ## execute it instr.times
+        # for n in 1..instr.times:
+            ecall
+        # end for
+    # of Read:
+        ## put the function 'read' (12) into a7 register
+        li a7, 12
+        ## execute it instr.times, storing the intermediate result in a0 register
+        # for n in 1..instr.times:
+            ecall
+        # end for
+        sb a0, (s0)
+    # of LoopStart:
+        ## custom label to indicate the start of a loop
+        loop_${i}:
+            lbu s1, (s0)
+            ## if s1 == 0, jump to the label corresponding to the end of the loop
+            beqz s1, loop_${instr.index}
+    # of LoopEnd:
+        loop_${i}:
+            lbu s1, (s0)
+            ## if s1 != 0, jump to the label corresponding to the start of the loop
+            bnez s1, loop_${instr.index}
+# end case
+# end method

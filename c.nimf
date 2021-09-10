@@ -1,0 +1,44 @@
+#? strip | stdtmpl(emit = "stdout.write")
+#
+# type C = ref object of Target
+#
+# method prelude(this: C) =
+    // #include <stdio.h>
+
+    int main() {
+        int cells[30000] = {0};
+        int* pointer = cells;
+# end method
+#
+# proc emit(this: C, instr: Instruction, i: int) =
+# case instr.command:
+    # of MoveRight:
+        pointer += ${instr.times};
+    # of MoveLeft:
+        pointer -= ${instr.times};
+    # of Add:
+        *pointer += ${instr.times};
+    # of Sub:
+        *pointer -= ${instr.times};
+    # of Write:
+        # for n in 1..instr.times:
+            putchar(*pointer);
+        # end for
+    # of Read:
+        # for n in 1..instr.times:
+            *pointer = getch();
+        # end for
+    # of LoopStart:
+        loop_${i}:
+        if(*pointer == 0)
+            goto loop_${instr.index};
+    # of LoopEnd:
+        loop_${i}:
+        if(*pointer != 0)
+            goto loop_${instr.index};
+# end case
+# end method
+
+# method fin(this: C) =
+    }
+# end method
