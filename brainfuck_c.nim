@@ -1,14 +1,14 @@
 import std/os
 import std/strformat
-import std/tables
 
 type
   Command = enum
     MoveRight, MoveLeft, Add, Sub, Write, Read, LoopStart, LoopEnd
 
-  Instruction = object
-    command: Command
-    times: int
+  Instruction = ref object
+    case command: Command
+      of LoopStart, LoopEnd: index: int
+      else: times: int
 
 var commands: seq[Command]
 
@@ -36,28 +36,29 @@ for i, c in code:
 
 var instructions: seq[Instruction]
 
-var command_index = 0
 var times_acc = 1
+var loop_matches: seq[Instruction]
 
-while command_index < commands.len:
-    let command = commands[command_index]
-    if command_index == commands.len - 1 or command == LoopStart or command == LoopEnd or command != commands[command_index + 1]:
-      instructions.add(Instruction(command: command, times: times_acc))
-      times_acc = 1
+for i, c in commands:
+  # add the let binding because nim is silly (TODO: report the bug to nim later)
+  let command = c
+  case command:
+    of LoopStart:
+      # the index added to LoopStart at this point is temporary, will be used for LoopEnd instead
+      let instruction = Instruction(command: command, index: instructions.len)
+      instructions.add(instruction)
+      loop_matches.add(instruction)
+    of LoopEnd:
+      let loop_start = loop_matches.pop
+      instructions.add(Instruction(command: command, index: loop_start.index))
+      # here the index of the LoopStart is updated to point to the end of the loop
+      loop_start.index = instructions.len - 1
     else:
-      times_acc += 1
-
-    command_index += 1
-
-var loops = initTable[int, int]()
-var loop_matches: seq[int]
-for i, c in instructions:
-  if c.command == LoopStart:
-    loop_matches.add(i)
-  elif c.command == LoopEnd:
-    let loop_start_i = loop_matches.pop()
-    loops[i] = loop_start_i
-    loops[loop_start_i] = i
+      if i == commands.len - 1 or c != commands[i + 1]:
+        instructions.add(Instruction(command: command, times: times_acc))
+        times_acc = 1
+      else:
+        times_acc += 1
 
 echo """
   .data
@@ -81,9 +82,9 @@ for i, c in instructions:
       """
     of Add:
       echo fmt"""
-        lbu s1, (s0)     # put the first byte at the pointer into s1 register
+        lbu s1, (s0)             # put the first byte at the pointer into s1 register
         addi s1, s1, {c.times}   # add c.times to the byte
-        sb s1, (s0)      # write the changes back into the cell
+        sb s1, (s0)              # write the changes back into the cell
       """
     of Sub:
       echo fmt"""
@@ -94,25 +95,24 @@ for i, c in instructions:
     of Write:
       echo """
         lbu a0, (s0)
-        li a7, 11        # put the function 'write'(11) into a7 register
+        li a7, 11                # put the function 'write'(11) into a7 register
       """
       for i in 1..c.times:
-        echo "ecall"     # execute it c.times
+        echo "ecall"             # execute it c.times
     of Read:
-      echo "li a7, 12"   # put the function 'read' (12) into a7 register
+      echo "li a7, 12"           # put the function 'read' (12) into a7 register
       for i in 1..c.times:
-        echo "ecall"     # execute it c.times, storing the intermediate result in a0 register
+        echo "ecall"             # execute it c.times, storing the intermediate result in a0 register
       echo "sb a0, (s0)"
     of LoopStart:
       echo fmt"""
         loop_{i}:                   # custom label to indicate the start of a loop
           lbu s1, (s0)
-          beqz s1, loop_{loops[i]}  # if s1 == 0, jump to the label corresponding to the end of the loop
+          beqz s1, loop_{c.index}  # if s1 == 0, jump to the label corresponding to the end of the loop
       """
     of LoopEnd:
       echo fmt"""
         loop_{i}:
           lbu s1, (s0)
-          bnez s1, loop_{loops[i]}  # if s1 != 0, jump to the label corresponding to the start of the loop
+          bnez s1, loop_{c.index}  # if s1 != 0, jump to the label corresponding to the start of the loop
       """
-    else: discard
