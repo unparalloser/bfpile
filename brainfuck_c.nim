@@ -13,19 +13,25 @@ type
 
   Target = ref object of RootObj
 
-method prelude(this: Target) {.base.} = discard
-method emit(this: Target, instr: Instruction, i: int) {.base.} = discard
-method fin(this: Target) {.base.} = discard
+method header(this: Target) {.base.} = discard
+method emit(this: Target, instr: Instruction, i: var int) {.base.} = discard
+method footer(this: Target) {.base.} = discard
 
 var commands: seq[Command]
 
-include "c.nimf"
-include "risc_v.nimf"
+include "targets/aarch64.nimf"
+include "targets/c.nimf"
+include "targets/interpreter.nim"
+include "targets/risc_v.nimf"
+include "targets/x86.nimf"
 
 let target =
   case toLowerAscii(paramStr(1)):
+    of "aarch64", "arm64": Aarch64()
     of "c": C()
+    of "i", "interpreter": Interpreter()
     of "risc-v", "riscv": RiscV()
+    of "x86": X86()
     else: raise newException(ValueError, "Got unknown target platform")
 
 let code = readFile(paramStr(2))
@@ -68,9 +74,13 @@ for i, c in commands:
       else:
         times_acc += 1
 
-target.prelude()
+target.header()
 
-for i, instr in instructions:
-  target.emit(instr, i)
+var instructions_i = 0
 
-target.fin()
+while instructions_i < len(instructions):
+  var instr = instructions[instructions_i]
+  target.emit(instr, instructions_i)
+  instructions_i += 1
+
+target.footer()

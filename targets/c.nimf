@@ -2,7 +2,7 @@
 #
 # type C = ref object of Target
 #
-# method prelude(this: C) =
+# method header(this: C) =
     // #include <stdio.h>
 
     int main() {
@@ -10,7 +10,7 @@
         int* pointer = cells;
 # end method
 #
-# proc emit(this: C, instr: Instruction, i: int) =
+# method emit(this: C, instr: Instruction, i: var int) =
 # case instr.command:
     # of MoveRight:
         pointer += ${instr.times};
@@ -39,6 +39,6 @@
 # end case
 # end method
 
-# method fin(this: C) =
+# method footer(this: C) =
     }
 # end method
