@@ -9,34 +9,34 @@
     .global _start
     _start:
         ## initialize a pointer to cells
-        la t0, cells
+        la a1, cells
 # end method
 #
 # method emit(this: RiscV, instr: Instruction, i: var int) =
 # case instr.command:
     # of MoveRight:
         ## move the pointer instr.times cells to the right
-        addi t0, t0, ${instr.times}
+        addi a1, a1, ${instr.times}
     # of MoveLeft:
-        addi t0, t0, ${-instr.times}
+        addi a1, a1, ${-instr.times}
     # of Add:
         ## put the first byte at the pointer into t1 register
-        lbu t1, (t0)
+        lbu t1, (a1)
         ## add instr.times to the byte
         addi t1, t1, ${instr.times}
         ## write the changes back into the cell at the pointer
-        sb t1, (t0)
+        sb t1, (a1)
     # of Sub:
-        lbu t1, (t0)
+        lbu t1, (a1)
         addi t1, t1, ${-instr.times}
-        sb t1, (t0)
+        sb t1, (a1)
     # of Write:
         ## put the function 'write'(64) into a7 register
         li a7, 64
         ## first arg is the stdout (file descriptor 1)
         li a0, 1
         ## second arg is the cell pointer
-        mv a1, t0
+        mv a1, a1
         ## third arg is the cell size
         li a2, 1
         ## execute it instr.times
@@ -48,7 +48,7 @@
         li a7, 63
         ## first arg is the stdin (file descriptor 0)
         li a0, 0
-        mv a1, t0
+        mv a1, a1
         li a2, 1
         # for n in 1..instr.times:
             ecall
@@ -56,12 +56,12 @@
     # of LoopStart:
         ## custom label to indicate the start of a loop
         loop_${i}:
-            lbu t1, (t0)
+            lbu t1, (a1)
             ## if t1 == 0, jump to the label corresponding to the end of the loop
             beqz t1, loop_${instr.index}
     # of LoopEnd:
         loop_${i}:
-            lbu t1, (t0)
+            lbu t1, (a1)
             ## if t1 != 0, jump to the label corresponding to the start of the loop
             bnez t1, loop_${instr.index}
 # end case

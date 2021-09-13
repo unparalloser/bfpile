@@ -1,44 +1,88 @@
-import std/enumerate
-import std/tables
-import std/terminal
-import std/os
+import options
+import os
+import strutils
 
-let code = readFile(paramStr(1))
+type
+  Command = enum
+    MoveRight, MoveLeft, Add, Sub, Write, Read, LoopStart, LoopEnd
 
-var cells: array[30000, int]
-var cells_i = 0
-var code_i = 0
+  Instruction = ref object
+    case command: Command
+      of LoopStart, LoopEnd: index: int
+      else: times: int
 
-var loops = initTable[int, int]()
-var loop_matches: seq[int]
-for i, c in enumerate(code):
-  if c == '[':
-    loop_matches.add(i)
-  elif c == ']':
-    let loop_start_i = loop_matches.pop()
-    loops[i] = loop_start_i
-    loops[loop_start_i] = i
+  Target = ref object of RootObj
 
-while code_i < len(code):
-  var c = code[code_i]
+method header(this: Target) {.base.} = discard
+method emit(this: Target, instr: Instruction, i: var int) {.base.} = discard
+method footer(this: Target) {.base.} = discard
+
+var commands: seq[Command]
+
+include "targets/aarch64.nimf"
+include "targets/c.nimf"
+include "targets/interpreter.nim"
+include "targets/riscv.nimf"
+#include "targets/wasm.nimf"
+include "targets/x86.nimf"
+
+let target =
+  case toLowerAscii(paramStr(1)):
+    of "a", "aarch64", "arm64": Aarch64()
+    of "c": C()
+    of "i", "interpreter": Interpreter()
+    of "r", "risc-v", "riscv": RiscV()
+    #of "w", "wasm": Wasm()
+    of "x", "x86": X86()
+    else: raise newException(ValueError, "Got unknown target platform")
+
+let code = readFile(paramStr(2))
+
+for c in code:
+  let cmd = case c:
+    of '>': some(MoveRight)
+    of '<': some(MoveLeft)
+    of '+': some(Add)
+    of '-': some(Sub)
+    of '.': some(Write)
+    of ',': some(Read)
+    of '[': some(LoopStart)
+    of ']': some(LoopEnd)
+    else: none(Command)
+
+  if cmd.isSome:
+    commands.add(cmd.get)
+
+var instructions: seq[Instruction]
+
+var times_acc = 1
+var loop_matches: seq[Instruction]
+
+for i, c in commands:
+  # add the let binding because nim is silly (TODO: report the bug to nim later)
+  let c = c
   case c:
-    of '>':
-      cells_i += 1
-    of '<':
-      cells_i -= 1
-    of '+':
-      cells[cells_i] += 1
-    of '-':
-      cells[cells_i] -= 1
-    of '.':
-      stdout.write(chr(cells[cells_i]))
-    of ',':
-      cells[cells_i] = ord(getch())
-    of '[':
-      if cells[cells_i] == 0:
-        code_i = loops[code_i]
-    of ']':
-      if cells[cells_i] != 0:
-        code_i = loops[code_i]
-    else: discard
-  code_i += 1
+    of LoopStart, LoopEnd:
+      let instruction = Instruction(command: c, index: instructions.len)
+      instructions.add(instruction)
+      if c == LoopStart:
+        loop_matches.add(instruction)
+      else:
+        swap(instruction.index, loop_matches.pop.index)
+    else:
+      if i == commands.len - 1 or c != commands[i + 1]:
+        instructions.add(Instruction(command: c, times: times_acc))
+        times_acc = 1
+      else:
+        times_acc += 1
+
+target.header()
+
+var instructions_i = 0
+
+while instructions_i < len(instructions):
+  var instr = instructions[instructions_i]
+  target.emit(instr, instructions_i)
+  instructions_i += 1
+
+target.footer()
