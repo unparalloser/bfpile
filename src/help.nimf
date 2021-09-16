@@ -1,0 +1,33 @@
+#? stdtmpl(emit = "stdout.write")
+#
+# proc printHelp =
+.-. .-')                _ (`-.                   ('-.
+\  ( OwO)              ( (OvO )                _( o.o)
+ ;-----.\    ,------. _.`     \ ,--. ,--.     (,------.
+ | .-.  |('--| _.---'(__...--'' |  | |  |.-')  |  .---'
+ | '-' / (O.O|(_\     |  /  | | |  | |  | o_o) |  |
+ | .-. `. /  |  '--.  |  |_.' | |  | |  |`-' | |  '--.
+ | |  \  |\_)|  .--'  |  .___.' |  | |  '---.' |  .--'
+ | '--'  /  \|  |_)   |  |      |  | |      |  |  `---.
+ `------'    `--'     `--'      `--' `------'  `------'
+
+Usage: bfpile [options] file...
+
+Options:
+  -h, --help              print this message
+  -i                      interpret file(s)
+  -l, --lang LANGUAGE     transpile file(s) to the language
+  -t, --target TARGET     compile file(s) to the target's assembly
+
+Languages:
+  c                       C
+
+Targets:
+  aarch64-linux           Linux AArch64 (Arm)
+  riscv64-linux           Linux RISC-V 64-bit
+  wasm32-wasi             WebAssembly System Interface (WASI)
+  x86_64-linux            Linux x86-64
+
+If no options are passed, the program defaults to compiling to Linux x86_64.
+
+# end proc

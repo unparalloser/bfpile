@@ -1,0 +1,42 @@
+#? strip | stdtmpl(emit = "stdout.write")
+#
+# type C = ref object of Emitter
+#
+# method writeHeader(self: C) =
+    int main() {
+      int cells[30000] = {0};
+      int* pointer = cells;
+# end method
+#
+# method writeInstruction(self: C, instr: Instruction, i: var int) =
+# case instr.command:
+  # of MoveRight:
+      pointer += ${instr.n};
+  # of MoveLeft:
+      pointer -= ${instr.n};
+  # of Add:
+      *pointer += ${instr.n};
+  # of Sub:
+      *pointer -= ${instr.n};
+  # of Write:
+    # for n in 1..instr.n:
+        write(1, pointer, 1);
+    # end for
+  # of Read:
+    # for n in 1..instr.n:
+        read(0, pointer, 1);
+    # end for
+  # of LoopStart:
+      loop_${i}:
+      if (*pointer == 0)
+        goto loop_${instr.i};
+  # of LoopEnd:
+      loop_${i}:
+      if (*pointer != 0)
+        goto loop_${instr.i};
+# end case
+# end method
+#
+# method writeFooter(self: C) =
+  }
+# end method
