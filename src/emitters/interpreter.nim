@@ -1,10 +1,9 @@
 type Interpreter = ref object of Emitter
-  cells: array[30000, int]
+  cells: array[cellsLen, int]
   i: int
 
 method writeInstruction(self: Interpreter, instr: Instruction, i: var int) =
-  let c = instr.command
-  case c:
+  case instr.command:
     of MoveRight:
       self.i += instr.n
     of MoveLeft:

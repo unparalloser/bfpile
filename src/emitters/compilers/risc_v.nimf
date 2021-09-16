@@ -1,10 +1,11 @@
 #? strip | stdtmpl(emit = "stdout.write")
 #
 # type RiscV = ref object of Emitter
+#
 # method writeHeader(self: RiscV) =
   .data
   cells:
-    .space 30000
+    .space ${cellsLen}
 
   .global _start
   _start:

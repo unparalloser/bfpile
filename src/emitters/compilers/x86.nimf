@@ -1,12 +1,13 @@
 #? strip | stdtmpl(emit = "stdout.write")
 #
 # type X86 = ref object of Emitter
+#
 # method writeHeader(self: X86) =
   .intel_syntax noprefix
 
   .data
   cells:
-    .space 30000
+    .space ${cellsLen}
 
   .text
   .global _start

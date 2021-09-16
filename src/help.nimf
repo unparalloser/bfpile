@@ -1,4 +1,4 @@
-#? stdtmpl(emit = "stdout.write")
+#? stdtmpl(emit = "stderr.write")
 #
 # proc printHelp =
 .-. .-')                _ (`-.                   ('-.
@@ -23,11 +23,11 @@ Languages:
   c                       C
 
 Targets:
-  aarch64-linux           Linux AArch64 (Arm)
+  aarch64-linux           Linux AArch64 (Arm 64-bit)
   riscv64-linux           Linux RISC-V 64-bit
   wasm32-wasi             WebAssembly System Interface (WASI)
-  x86_64-linux            Linux x86-64
+  x86_64-linux            Linux x86-64 (AMD64)
 
-If no options are passed, the program defaults to compiling to Linux x86_64.
+If no options are passed, bfpile defaults to compiling to Linux x86-64.
 
 # end proc
