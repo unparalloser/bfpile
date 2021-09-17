@@ -1,4 +1,6 @@
-type Emitter = ref object of RootObj
+import instruction
+
+type Emitter* = ref object of RootObj
 
 method writeHeader(this: Emitter) {.base.} =
   discard
@@ -19,3 +21,5 @@ method write(this: Emitter, instructions: seq[Instruction]) {.base.} =
   this.writeHeader()
   this.writeBody(instructions)
   this.writeFooter()
+
+export write

@@ -1,4 +1,7 @@
-type Command = enum
+import options
+import streams
+
+type Command* = enum
   MoveRight, MoveLeft, Add, Sub, Write, Read, LoopStart, LoopEnd
 
 const bufferLen = 4096
@@ -23,3 +26,5 @@ proc tokenize(code: Stream): seq[Command] =
 
       if cmd.isSome:
         result.add(cmd.get)
+
+export tokenize

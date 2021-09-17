@@ -1,7 +1,9 @@
-type Instruction = ref object
-  case command: Command
-    of LoopStart, LoopEnd: i: int
-    else: n: int
+import command
+
+type Instruction* = ref object
+  case command*: Command
+    of LoopStart, LoopEnd: i*: int
+    else: n*: int
 
 func parse(commands: seq[Command]): seq[Instruction] =
   var loopMatches: seq[Instruction]
@@ -25,3 +27,5 @@ func parse(commands: seq[Command]): seq[Instruction] =
           n = 1
         else:
           n += 1
+
+export parse

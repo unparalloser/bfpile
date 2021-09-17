@@ -5,14 +5,10 @@ This project was created by [Tanya Nevskaya](https://github.com/unparalloser) wi
 All Brainfuck commands are optimized in bfpile, meaning if the same Brainfuck command is repeated more than once, only one instruction will be passed to an apropriate emitter.
 
 ## How to build
----
 
-???
-
-Done!
+This project can be built with [Nimble](https://github.com/nim-lang/nimble) that comes with [Nim](https://nim-lang.org). Just run `nimble build`.
 
 ## How to use
----
 
 ### Compilation
 
@@ -26,12 +22,12 @@ or
 
 Supported compiler targets:
 
-- `aarch64-linux` -- Linux AArch64 (Arm 64-bit)
-- `riscv64-linux` -- Linux RISC-V 64-bit
-- `wasm32-wasi` ------ WebAssembly System Interface (WASI)
-- `x86_64-linux` ---- Linux x86-64 (AMD64)
-
----
+| Target          | Description
+|-----------------|------------
+| `aarch64-linux` | Linux AArch64 (Arm 64-bit)
+| `riscv64-linux` | Linux RISC-V 64-bit
+| `wasm32-wasi`   | WebAssembly System Interface (WASI)
+| `x86_64-linux`  | Linux x86-64 (AMD64)
 
 ### Transpilation
 
@@ -43,13 +39,13 @@ or
 
 `bfpile --lang LANGUAGE filename.bf`
 
-Supported transpiler languages
+Supported transpiler languages:
 
-- `c` - C
+| Language | Description
+|----------|------------
+| `c`      | C
 
 Rust and Zig are currently in development!
-
----
 
 ### Interpretation
 
@@ -57,14 +53,12 @@ To interpret Brainfuck, enter:
 
 `bfpile -i filename.bf`
 
----
-
 If no option is provided, bfpile defaults to compiling to Linux x86-64.
 
 ## Tests
----
+
+You can run bfpile with any of the tests contained in `vendor` folder. `mandelbrot.bf` is mainly used for benchmarking.
 
 ## Contributing
----
 
 All contributions are very welcome! Found a confusing comment? Know a better way to write some part of the program? Want to submit an additional emmiter? Feel free to create issues and pull requests to [bfpile repository](https://github.com/unparalloser/bfpile)!

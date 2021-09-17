@@ -1,26 +1,20 @@
-import options
-import parseopt
-import streams
-import strformat
-import strutils
+import parseopt, streams, strformat, strutils
 
-include "help.nimf"
-include "command.nim"
-include "instruction.nim"
-include "emitter.nim"
+import bfpile/command, bfpile/instruction, bfpile/emitter
 
 const cellsLen = 30000
 
-include "emitters/interpreter.nim"
-include "emitters/compilers/arm.nimf"
-include "emitters/compilers/risc_v.nimf"
-include "emitters/compilers/wasm.nimf"
-include "emitters/compilers/x86.nimf"
-include "emitters/transpilers/c.nimf"
+include "bfpile/help.nimf"
 
-# TODO: automatically make the user's current platform the default target
-let emitterDefault = func: Emitter = X86()
-var emitter = emitterDefault
+include "bfpile/emitters/interpreter.nim"
+include "bfpile/emitters/compilers/arm.nimf"
+include "bfpile/emitters/compilers/risc_v.nimf"
+include "bfpile/emitters/compilers/wasm.nimf"
+include "bfpile/emitters/compilers/x86.nimf"
+include "bfpile/emitters/transpilers/c.nimf"
+
+let emitterGenDefault = func: Emitter = X86()
+var emitterGen = emitterGenDefault
 var filenames: seq[string]
 var optParser = initOptParser(shortNoVal = {'h', 'i'}, longNoVal = @["help"])
 
@@ -32,7 +26,7 @@ proc usageWarning(msg: string) =
   stderr.writeLine("Warning: ", msg)
 
 proc assertEmitterDefault =
-  if emitter != emitterDefault:
+  if emitterGen != emitterGenDefault:
     usageError("can do only one operation at a time (compile, interpret or transpile)")
 
 for kind, key, val in optParser.getopt():
@@ -47,15 +41,15 @@ for kind, key, val in optParser.getopt():
           quit(64) # EX_USAGE
         of "i":
           assertEmitterDefault()
-          emitter = func: Emitter = Interpreter()
+          emitterGen = func: Emitter = Interpreter()
         of "l", "lang", "language":
           assertEmitterDefault()
-          emitter = case val:
+          emitterGen = case val:
             of "c": (func: Emitter = C())
             else: usageError(fmt"unknown language: {val}")
         of "t", "target":
           assertEmitterDefault()
-          emitter = case val:
+          emitterGen = case val:
             of "aarch64-linux": (func: Emitter = Arm())
             of "riscv64-linux": (func: Emitter = RiscV())
             of "wasm32-wasi": (func: Emitter = Wasm())
@@ -68,4 +62,4 @@ if filenames.len == 0:
   printHelp()
 
 for f in filenames:
-  emitter().write(parse(tokenize(openFileStream(f))))
+  emitterGen().write(parse(tokenize(openFileStream(f))))
