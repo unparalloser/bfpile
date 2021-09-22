@@ -1,8 +1,10 @@
-# Compile, transpile and interpret Brainfuck with bfpile!
+# bfpile
+
+Compile, transpile and interpret Brainfuck with bfpile!
 
 This project was created by [Tanya Nevskaya](https://github.com/unparalloser) with the guidance and help of [Yana Timoshenko](https://github.com/abelianring) <3
 
-All Brainfuck commands are optimized in bfpile, meaning if the same Brainfuck command is repeated more than once, only one instruction will be passed to an apropriate emitter.
+bfpile also implements [peephole optimizations](https://en.wikipedia.org/wiki/Peephole_optimization) that turn consecutive Brainfuck commands into one CPU instruction!
 
 ## How to build
 
@@ -15,10 +17,6 @@ This project can be built with [Nimble](https://github.com/nim-lang/nimble) that
 To compile Brainfuck to a desired target, enter:
 
 `bfpile -t TARGET filename.bf`
-
-or
-
-`bfpile --target TARGET filename.bf`
 
 Supported compiler targets:
 
@@ -34,10 +32,6 @@ Supported compiler targets:
 To transpile Brainfuck to a desired language, enter:
 
 `bfpile -l LANGUAGE filename.bf`
-
-or
-
-`bfpile --lang LANGUAGE filename.bf`
 
 Supported transpiler languages:
 
@@ -55,9 +49,11 @@ To interpret Brainfuck, enter:
 
 If no option is provided, bfpile defaults to compiling to Linux x86-64.
 
-## Tests
+Enter `bfpile` without any arguments to get help :)
 
-You can run bfpile with any of the tests contained in `vendor` folder. `mandelbrot.bf` is mainly used for benchmarking.
+## How to Test
+
+You can test bfpile with any of the programs in `vendor` folder. `mandelbrot.bf` is mostly useful for benchmarking.
 
 ## Contributing
 

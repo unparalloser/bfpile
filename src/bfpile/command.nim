@@ -1,5 +1,4 @@
-import options
-import streams
+import options, streams
 
 type Command* = enum
   MoveRight, MoveLeft, Add, Sub, Write, Read, LoopStart, LoopEnd

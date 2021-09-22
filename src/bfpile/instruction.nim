@@ -10,8 +10,7 @@ func parse(commands: seq[Command]): seq[Instruction] =
   var n = 1
 
   for i, cmd in commands:
-    # add the let binding because nim is silly
-    # TODO: report the bug to nim later
+    # the let binding is needed because of a bug in nim
     let cmd = cmd
     case cmd:
       of LoopStart, LoopEnd:

@@ -8,7 +8,6 @@ srcDir        = "src"
 installExt    = @["nim"]
 bin           = @["bfpile"]
 
-
 # Dependencies
 
 requires "nim >= 1.4.8"
