@@ -58,4 +58,4 @@ You can test bfpile with any of the programs in `vendor` folder. `mandelbrot.bf`
 
 ## Contributing
 
-All contributions are very welcome! Found a confusing comment? Know a better way to write some part of the program? Want to submit an additional emmiter? Feel free to create issues and pull requests to [bfpile repository](https://github.com/unparalloser/bfpile)!
+All contributions are very welcome! Found a confusing comment? Know a better way to write some part of the program? Want to submit an additional emitter? Feel free to create issues and pull requests to [bfpile repository](https://github.com/unparalloser/bfpile)!
