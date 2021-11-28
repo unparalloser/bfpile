@@ -16,7 +16,7 @@ This project can be built with [Nimble](https://github.com/nim-lang/nimble) that
 
 To compile Brainfuck to a desired target, enter:
 
-`bfpile -t TARGET filename.bf`
+`bfpile -t<TARGET> filename.bf`
 
 Supported compiler targets:
 
@@ -31,15 +31,16 @@ Supported compiler targets:
 
 To transpile Brainfuck to a desired language, enter:
 
-`bfpile -l LANGUAGE filename.bf`
+`bfpile -l<LANGUAGE> filename.bf`
 
 Supported transpiler languages:
 
 | Language | Description
 |----------|------------
 | `c`      | C
+| `rust`   | [Rust](https://rust-lang.org)
 
-Rust and Zig are currently in development!
+Zig is currently in development!
 
 ### Interpretation
 

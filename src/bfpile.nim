@@ -12,6 +12,7 @@ include "bfpile/emitters/compilers/risc_v.nimf"
 include "bfpile/emitters/compilers/wasm.nimf"
 include "bfpile/emitters/compilers/x86.nimf"
 include "bfpile/emitters/transpilers/c.nimf"
+include "bfpile/emitters/transpilers/rust.nimf"
 
 let emitterGenDefault = func: Emitter = X86()
 var emitterGen = emitterGenDefault
@@ -46,6 +47,7 @@ for kind, key, val in optParser.getopt():
           assertEmitterDefault()
           emitterGen = case val:
             of "c": (func: Emitter = C())
+            of "rust": (func: Emitter = Rust())
             else: usageError(fmt"unknown language: {val}")
         of "t", "target":
           assertEmitterDefault()

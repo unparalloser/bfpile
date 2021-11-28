@@ -3,12 +3,14 @@
 # type C = ref object of Emitter
 #
 # method writeHeader(self: C) =
+    # stdout.writeLine("#include <unistd.h>")
+
     int main() {
       int cells[${cellsLen}] = {0};
       int* ptr = cells;
 # end method
 #
-# method writeInstruction(self: C, instr: Instruction, i: var int) =
+# method writeInstruction(self: C, instr: Instruction, _: var int) =
 # case instr.command:
   # of MoveRight:
       ptr += ${instr.n};
@@ -27,13 +29,9 @@
         read(0, ptr, 1);
     # end for
   # of LoopStart:
-      loop_${i}:
-      if (*ptr == 0)
-        goto loop_${instr.i};
+      while (*ptr) {
   # of LoopEnd:
-      loop_${i}:
-      if (*ptr != 0)
-        goto loop_${instr.i};
+      }
 # end case
 # end method
 #

@@ -1,0 +1,48 @@
+#? strip | stdtmpl(emit = "stdout.write")
+#
+# type Rust = ref object of Emitter
+#
+# method writeHeader(self: Rust) =
+    # stdout.writeLine("#[allow(unused_imports)]")
+    use std::io::{self, Read, Write};
+    # stdout.writeLine("#[allow(unused_imports)]")
+    use std::slice;
+
+    # stdout.writeLine("#[allow(unused)]")
+    fn main() {
+      let mut cells: [u8; ${cellsLen}] = [0; ${cellsLen}];
+      let mut i: usize = 0;
+      let mut stdout = io::stdout();
+      let mut stdin = io::stdin();
+# end method
+#
+# method writeInstruction(self: Rust, instr: Instruction, _: var int) =
+# case instr.command:
+  # of MoveRight:
+      i += ${instr.n};
+  # of MoveLeft:
+      i -= ${instr.n};
+  # of Add:
+      cells[i] += ${instr.n};
+  # of Sub:
+      cells[i] -= ${instr.n};
+  # of Write:
+      let cw = slice::from_ref(&cells[i]);
+    # for n in 1..instr.n:
+      let _ = stdout.write(cw);
+    # end for
+  # of Read:
+      let cr = slice::from_mut(&mut cells[i]);
+    # for n in 1..instr.n:
+      let _ = stdin.read(cr);
+    # end for
+  # of LoopStart:
+      while cells[i] != 0 {
+  # of LoopEnd:
+      }
+# end case
+# end method
+#
+# method writeFooter(self: Rust) =
+  }
+# end method
