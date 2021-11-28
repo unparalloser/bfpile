@@ -14,19 +14,20 @@
 Usage: bfpile [options] file...
 
 Options:
-  -h, --help              print this message
-  -i                      interpret file(s)
-  -l, --lang LANGUAGE     transpile file(s) to the language
-  -t, --target TARGET     compile file(s) to the target's assembly
+  -h, --help                       print this message
+  -i                               interpret file(s)
+  -l<LANGUAGE>, --lang <LANGUAGE>  transpile file(s) to the language
+  -t<TARGET>, --target <TARGET>    compile file(s) to the target's assembly
 
 Languages:
-  c                       C
+  c                                C
+  rust                             Rust <https://rust-lang.org>
 
 Targets:
-  aarch64-linux           Linux AArch64 (Arm 64-bit)
-  riscv64-linux           Linux RISC-V 64-bit
-  wasm32-wasi             WebAssembly System Interface (WASI)
-  x86_64-linux            Linux x86-64 (AMD64)
+  aarch64-linux                    Linux AArch64 (Arm 64-bit)
+  riscv64-linux                    Linux RISC-V 64-bit
+  wasm32-wasi                      WebAssembly System Interface (WASI)
+  x86_64-linux                     Linux x86-64 (AMD64)
 
 If no options are passed, bfpile defaults to compiling to Linux x86-64.
 
