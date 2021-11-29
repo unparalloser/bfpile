@@ -22,6 +22,7 @@ Options:
 Languages:
   c                                C
   rust                             Rust <https://rust-lang.org>
+  zig                              Zig <https://ziglang.org>
 
 Targets:
   aarch64-linux                    Linux AArch64 (Arm 64-bit)
