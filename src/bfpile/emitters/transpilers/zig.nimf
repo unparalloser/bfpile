@@ -1,0 +1,44 @@
+#? strip | stdtmpl(emit = "stdout.write")
+#
+# type Zig = ref object of Emitter
+#
+# method writeHeader(self: Zig) =
+    const std = @import("std");
+    const stdin = std.io.getStdIn().reader();
+    const stdout = std.io.getStdOut().writer();
+
+    pub fn main() void {
+      var cells: [${cellsLen}]u8 = std.mem.zeroes([${cellsLen}]u8);
+      var i: usize = 0;
+# end method
+#
+# method writeInstruction(self: Zig, instr: Instruction, _: var int) =
+# case instr.command:
+  # of MoveRight:
+      i += ${instr.n};
+  # of MoveLeft:
+      i -= ${instr.n};
+  # of Add:
+      cells[i] += ${instr.n};
+  # of Sub:
+      cells[i] -= ${instr.n};
+  # of Write:
+    # for n in 1..instr.n:
+      stdout.writeByte(cells[i]) catch {};
+    # end for
+  # of Read:
+    # for n in 1..instr.n:
+      if (stdin.readByte()) |c| {
+        cells[i] = c; 
+      } else |err| {}
+    # end for
+  # of LoopStart:
+      while (cells[i] != 0) {
+  # of LoopEnd:
+      }
+# end case
+# end method
+#
+# method writeFooter(self: Zig) =
+  }
+# end method

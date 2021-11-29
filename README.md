@@ -39,8 +39,7 @@ Supported transpiler languages:
 |----------|------------
 | `c`      | C
 | `rust`   | [Rust](https://rust-lang.org)
-
-Zig is currently in development!
+| `zig`    | [Zig](https://ziglang.org)
 
 ### Interpretation
 
