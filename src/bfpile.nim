@@ -1,6 +1,6 @@
 import parseopt, streams, strformat, strutils
 
-import bfpile/command, bfpile/instruction, bfpile/emitter
+import bfpile/command, bfpile/instruction, bfpile/emitter, bfpile/platform, bfpile/compiler
 
 const cellsLen = 30000
 
@@ -15,7 +15,7 @@ include "bfpile/emitters/transpilers/c.nimf"
 include "bfpile/emitters/transpilers/rust.nimf"
 include "bfpile/emitters/transpilers/zig.nimf"
 
-let emitterGenDefault = func: Emitter = X86()
+let emitterGenDefault = func: Emitter = X86(platform: Linux)
 var emitterGen = emitterGenDefault
 var filenames: seq[string]
 var optParser = initOptParser(shortNoVal = {'h', 'i'}, longNoVal = @["help"])
@@ -57,7 +57,11 @@ for kind, key, val in optParser.getopt():
             of "aarch64-linux": (func: Emitter = Arm())
             of "riscv64-linux": (func: Emitter = RiscV())
             of "wasm32-wasi": (func: Emitter = Wasm())
-            of "x86_64-linux": (func: Emitter = X86())
+            of "x86_64-linux": (func: Emitter = X86(platform: Linux))
+            of "x86_64-freebsd": (func: Emitter = X86(platform: FreeBSD))
+            of "x86_64-netbsd": (func: Emitter = X86(platform: NetBSD))
+            of "x86_64-openbsd": (func: Emitter = X86(platform: OpenBSD))
+            of "x86_64-illumos": (func: Emitter = X86(platform: Illumos))
             else: usageError(fmt"unknown target: {val}")
         else: usageWarning(fmt"unknown option: {key}")
     of cmdEnd: discard

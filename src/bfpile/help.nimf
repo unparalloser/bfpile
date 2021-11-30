@@ -29,6 +29,10 @@ Targets:
   riscv64-linux                    Linux RISC-V 64-bit
   wasm32-wasi                      WebAssembly System Interface (WASI)
   x86_64-linux                     Linux x86-64 (AMD64)
+  x86_64-freebsd                   FreeBSD x86-64 (AMD64)
+  x86_64-netbsd                    NetBSD x86-64 (AMD64)
+  x86_64-openbsd                   OpenBSD x86-64 (AMD64)
+  x86_64-illumos                   Illumos x86-64 (AMD64)
 
 If no options are passed, bfpile defaults to compiling to Linux x86-64.
 

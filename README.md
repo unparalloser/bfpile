@@ -26,6 +26,10 @@ Supported compiler targets:
 | `riscv64-linux` | Linux RISC-V 64-bit
 | `wasm32-wasi`   | WebAssembly System Interface (WASI)
 | `x86_64-linux`  | Linux x86-64 (AMD64)
+| `x86_64-freebsd`| [FreeBSD](https://freebsd.org) x86-64 (AMD64)
+| `x86_64-netbsd` | [NetBSD](https://netbsd.org) x86-64 (AMD64)
+| `x86_64-openbsd`| [OpenBSD](https://openbsd.org) x86-64 (AMD64)
+| `x86_64-illumos`| [Illumos](https://illumos.org) x86-64 (AMD64)
 
 ### Transpilation
 
