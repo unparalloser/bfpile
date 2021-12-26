@@ -55,18 +55,18 @@
       svc 0
     # end for
   # of LoopStart:
+    ldrb w10, [x1]
+    ## if w10 == 0, jump to the label corresponding to the end of the loop
+    cmp w10, 0
+    b.eq loop_${instr.i}
     ## custom label to indicate the start of a loop
     loop_${i}:
-      ldrb w10, [x1]
-      ## if w10 == 0, jump to the label corresponding to the end of the loop
-      cmp w10, 0
-      b.eq loop_${instr.i}
   # of LoopEnd:
+    ldrb w10, [x1]
+    ## if w10 != 0, jump to the label corresponding to the start of the loop
+    cmp w10, 0
+    b.ne loop_${instr.i}
     loop_${i}:
-      ldrb w10, [x1]
-      ## if w10 != 0, jump to the label corresponding to the start of the loop
-      cmp w10, 0
-      b.ne loop_${instr.i}
 # end case
 # end method
 #

@@ -55,16 +55,16 @@
       ecall
     # end for
   # of LoopStart:
+    lbu t1, (a1)
+    ## if t1 == 0, jump to the label corresponding to the end of the loop
+    beqz t1, loop_${instr.i}
     ## custom label to indicate the start of a loop
     loop_${i}:
-      lbu t1, (a1)
-      ## if t1 == 0, jump to the label corresponding to the end of the loop
-      beqz t1, loop_${instr.i}
   # of LoopEnd:
+    lbu t1, (a1)
+    ## if t1 != 0, jump to the label corresponding to the start of the loop
+    bnez t1, loop_${instr.i}
     loop_${i}:
-      lbu t1, (a1)
-      ## if t1 != 0, jump to the label corresponding to the start of the loop
-      bnez t1, loop_${instr.i}
 # end case
 # end method
 #

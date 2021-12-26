@@ -76,16 +76,16 @@
       syscall
     # end for
   # of LoopStart:
+    ## if value at esi == 0, jump to the label corresponding to the end of the loop
+    cmp byte ptr [esi], 0
+    je loop_${instr.i}
     ## custom label to indicate the start of a loop
     loop_${i}:
-      ## if value at esi == 0, jump to the label corresponding to the end of the loop
-      cmp byte ptr [esi], 0
-      je loop_${instr.i}
   # of LoopEnd:
+    ## if value at esi != 0, jump to the label corresponding to the start of the loop
+    cmp byte ptr [esi], 0
+    jne loop_${instr.i}
     loop_${i}:
-      ## if value at esi != 0, jump to the label corresponding to the start of the loop
-      cmp byte ptr [esi], 0
-      jne loop_${instr.i}
 # end case
 # end method
 #
